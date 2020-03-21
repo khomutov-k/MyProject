@@ -40,8 +40,8 @@ public class Apartment {
         Capacity = capacity;
     }
 
-    public ApartmentType getApartmentType() {
-        return apartmentType;
+    public String getApartmentType() {
+        return apartmentType.toString();
     }
 
     public void setApartmentType(ApartmentType apartmentType) {
