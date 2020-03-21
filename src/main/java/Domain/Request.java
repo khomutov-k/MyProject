@@ -3,10 +3,19 @@ package Domain;
 import java.util.Date;
 
 public class Request {
+    private long id;
     private int NumberOfPeople;
     private Date ArrivalDate;
     private Date DepartureDate;
     private ApartmentType WantedType;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public ApartmentType getWantedType() {
         return WantedType;

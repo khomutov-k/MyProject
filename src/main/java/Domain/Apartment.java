@@ -1,9 +1,36 @@
 package Domain;
 
 public class Apartment {
+    private long id;
     private int Capacity;
     private ApartmentType apartmentType;
+    private int number;
     private int price;
+    private long tenantId;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(long tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
 
     public int getCapacity() {
         return Capacity;

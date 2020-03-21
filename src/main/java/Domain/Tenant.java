@@ -1,25 +1,35 @@
 package Domain;
 
 public class Tenant {
-    private String FirstName;
-    private  String SecondName;
+
+    private long id;
+    private String firstName;
+    private String secondName;
     private String email;
     private String phone;
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getFirstName() {
-        return FirstName;
+        return firstName;
     }
 
     public void setFirstName(String firstName) {
-        FirstName = firstName;
+        this.firstName = firstName;
     }
 
     public String getSecondName() {
-        return SecondName;
+        return secondName;
     }
 
     public void setSecondName(String secondName) {
-        SecondName = secondName;
+        this.secondName = secondName;
     }
 
     public String getEmail() {
