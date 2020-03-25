@@ -11,5 +11,5 @@ public interface ApartmentRepository {
     //TODO Edit operations
 
     List<Apartment> findAll(); // Select query to get all apartments from DB
-    Apartment findById(); // Select query to get  apartment by ID
+    Apartment findById(long id); // Select query to get  apartment by ID
 }

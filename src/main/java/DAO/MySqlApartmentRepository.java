@@ -1,20 +1,23 @@
 package DAO;
 
 import Domain.Apartment;
+import Domain.ApartmentType;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.sql.DriverManager.getConnection;
 
 public class MySqlApartmentRepository implements ApartmentRepository{
     //TODO javadoc
+    final String url = "jdbc:mysql://localhost:3306/store";
+    final String user = "root";
+    final String password = "root";
+
     public int addApartment(Apartment apartment) {
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/store", "root", "root");
+            Connection connection = DriverManager.getConnection(url, user, password);
             String sql = "INSERT INTO  apartment set " +
                     "capacity = ?," +
                     "apartmentType = ?," +
@@ -33,14 +36,63 @@ public class MySqlApartmentRepository implements ApartmentRepository{
     }
 
     public int deleteApartment(Apartment apartment) {
-        return 0;
+        try{
+            Connection connection = DriverManager.getConnection(url, user, password);
+            Statement stmt = connection.createStatement();
+            long id = apartment.getId();
+            String sql = "DELETE * FROM apartment where idApartment =" + id + "limit 1";
+            return stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     public List<Apartment> findAll() {
+        List<Apartment> apartments = new ArrayList<Apartment>();
+
+        try{
+            Connection connection = DriverManager.getConnection(url, user, password);
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM apartment");
+            if(rs.next())
+            {
+                Apartment apartment = new Apartment();
+                apartment.setId(rs.getInt("idApartment") );
+                apartment.setCapacity(rs.getInt("capacity") );
+                //TODO exception handling
+                apartment.setApartmentType(ApartmentType.valueOf(rs.getString("apartmentType")) );
+                apartment.setNumber(rs.getInt("apartmentNumber"));
+                apartment.setPrice(rs.getInt("price") );
+                apartments.add(apartment);
+            }
+            return apartments;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
-    public Apartment findById() {
+    public Apartment findById(long id) {
+        try{
+            Apartment apartment = new Apartment();
+            Connection connection = DriverManager.getConnection(url, user, password);
+            Statement stmt = connection.createStatement();
+            String sql = "SELECT * FROM apartment where idApartment =" + id + "limit 1";
+            ResultSet rs = stmt.executeQuery("SELECT * FROM apartment where idApartment =" + id + "limit 1");
+            if(rs.next())
+            {
+                apartment.setId(rs.getInt("idApartment") );
+                apartment.setCapacity(rs.getInt("capacity") );
+                //TODO exception handling
+                apartment.setApartmentType(ApartmentType.valueOf(rs.getString("apartmentType")) );
+                apartment.setNumber(rs.getInt("apartmentNumber"));
+                apartment.setPrice(rs.getInt("price") );
+            }
+            return apartment;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }
