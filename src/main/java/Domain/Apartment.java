@@ -6,7 +6,6 @@ public class Apartment {
     private ApartmentType apartmentType;
     private int number;
     private int price;
-    private long tenantId;
 
     public long getId() {
         return id;
@@ -14,14 +13,6 @@ public class Apartment {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public long getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(long tenantId) {
-        this.tenantId = tenantId;
     }
 
     public int getNumber() {

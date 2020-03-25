@@ -1,6 +1,6 @@
 package Domain;
 
-enum ApartmentType {
+public enum ApartmentType {
     SINGLE("Single"),
     DELUX("Delux"),
     SUIT("Suit"),
