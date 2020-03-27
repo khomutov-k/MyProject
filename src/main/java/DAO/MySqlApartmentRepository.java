@@ -11,7 +11,7 @@ import static java.sql.DriverManager.getConnection;
 
 public class MySqlApartmentRepository implements ApartmentRepository{
     //TODO javadoc
-    final String url = "jdbc:mysql://localhost:3306/store";
+    final String url = "jdbc:mysql://localhost:3306/hoteldb";
     final String user = "root";
     final String password = "root";
 
@@ -40,7 +40,7 @@ public class MySqlApartmentRepository implements ApartmentRepository{
             Connection connection = DriverManager.getConnection(url, user, password);
             Statement stmt = connection.createStatement();
             long id = apartment.getId();
-            String sql = "DELETE * FROM apartment where idApartment =" + id + "limit 1";
+            String sql = "DELETE * FROM apartment where idApartment =" + id;
             return stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -72,24 +72,28 @@ public class MySqlApartmentRepository implements ApartmentRepository{
         }
         return null;
     }
-
+    //TODO idNotFoundException?
     public Apartment findById(long id) {
         try{
             Apartment apartment = new Apartment();
             Connection connection = DriverManager.getConnection(url, user, password);
             Statement stmt = connection.createStatement();
-            String sql = "SELECT * FROM apartment where idApartment =" + id + "limit 1";
-            ResultSet rs = stmt.executeQuery("SELECT * FROM apartment where idApartment =" + id + "limit 1");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM apartment where idApartment =" + id);
             if(rs.next())
             {
                 apartment.setId(rs.getInt("idApartment") );
                 apartment.setCapacity(rs.getInt("capacity") );
-                //TODO exception handling
-                apartment.setApartmentType(ApartmentType.valueOf(rs.getString("apartmentType")) );
+                try{
+                    String aType = rs.getString("apartmentType");
+                    apartment.setApartmentType(ApartmentType.valueOf(aType.toUpperCase()));
+                }catch(NullPointerException ex){
+                    System.out.println("Exception: Enum not found.");
+                    return null;
+                }
                 apartment.setNumber(rs.getInt("apartmentNumber"));
                 apartment.setPrice(rs.getInt("price") );
+                return apartment;
             }
-            return apartment;
         } catch (SQLException e) {
             e.printStackTrace();
         }
