@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="b5b8441b-b6fa-41b4-99c7-2e24fb95d05a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignor" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +146,7 @@
       <workItem from="1584972784506" duration="5957000" />
       <workItem from="1585167358004" duration="10006000" />
       <workItem from="1585218165004" duration="3069000" />
-      <workItem from="1585329941074" duration="764000" />
+      <workItem from="1585329941074" duration="1675000" />
     </task>
     <task id="LOCAL-00001" summary="Initialize commit.">
       <created>1584644102398</created>
@@ -217,7 +218,21 @@
       <option name="project" value="LOCAL" />
       <updated>1585330487955</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Gitignor update.">
+      <created>1585330714238</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1585330714238</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Gitignor update.">
+      <created>1585330930796</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1585330930796</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -274,10 +289,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="566" y="277" width="403" height="288" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1536.834@0.0.1536.834" timestamp="1584803278474" />
-    <state x="177" y="5" key="CommitChangelistDialog2" timestamp="1585330713465">
+    <state x="177" y="5" key="CommitChangelistDialog2" timestamp="1585330929921">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="177" y="5" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1585330713465" />
+    <state x="177" y="5" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1585330929921" />
     <state width="429" height="466" key="DebuggerActiveHint" timestamp="1585178608463">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
@@ -346,10 +361,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="465" y="242" key="com.intellij.ide.util.TipDialog/0.0.1536.834@0.0.1536.834" timestamp="1585329942750" />
-    <state x="578" y="335" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1585330455402">
+    <state x="578" y="335" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1585383923615">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="578" y="335" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.834@0.0.1536.834" timestamp="1585330455402" />
+    <state x="578" y="335" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.834@0.0.1536.834" timestamp="1585383923615" />
     <state x="209" y="113" key="new project wizard" timestamp="1585062012836">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
