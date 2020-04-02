@@ -4,10 +4,10 @@ import java.util.Date;
 
 public class Request {
     private long id;
-    private int NumberOfPeople;
-    private Date ArrivalDate;
-    private Date DepartureDate;
-    private ApartmentType WantedType;
+    private int numberOfPeople;
+    private Date arrivalDate;
+    private Date departureDate;
+    private ApartmentType wantedType;
 
     public long getId() {
         return id;
@@ -18,34 +18,34 @@ public class Request {
     }
 
     public ApartmentType getWantedType() {
-        return WantedType;
+        return wantedType;
     }
 
     public void setWantedType(ApartmentType wantedType) {
-        WantedType = wantedType;
+        this.wantedType = wantedType;
     }
 
     public int getNumberOfPeople() {
-        return NumberOfPeople;
+        return numberOfPeople;
     }
 
     public void setNumberOfPeople(int numberOfPeople) {
-        NumberOfPeople = numberOfPeople;
+        this.numberOfPeople = numberOfPeople;
     }
 
     public Date getArrivalDate() {
-        return ArrivalDate;
+        return arrivalDate;
     }
 
     public void setArrivalDate(Date arrivalDate) {
-        ArrivalDate = arrivalDate;
+        this.arrivalDate = arrivalDate;
     }
 
     public Date getDepartureDate() {
-        return DepartureDate;
+        return departureDate;
     }
 
     public void setDepartureDate(Date departureDate) {
-        DepartureDate = departureDate;
+        this.departureDate = departureDate;
     }
 }

@@ -2,7 +2,7 @@ package Domain;
 
 public class Apartment {
     private long id;
-    private int Capacity;
+    private int capacity;
     private ApartmentType apartmentType;
     private int number;
     private int price;
@@ -24,11 +24,11 @@ public class Apartment {
     }
 
     public int getCapacity() {
-        return Capacity;
+        return capacity;
     }
 
     public void setCapacity(int capacity) {
-        Capacity = capacity;
+        this.capacity = capacity;
     }
 
     public String getApartmentType() {
