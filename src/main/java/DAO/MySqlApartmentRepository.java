@@ -5,98 +5,111 @@ import Domain.ApartmentType;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import static java.sql.DriverManager.getConnection;
-
+//TODO javadoc
 public class MySqlApartmentRepository implements ApartmentRepository{
-    //TODO javadoc
-    final String url = "jdbc:mysql://localhost:3306/hoteldb";
-    final String user = "root";
-    final String password = "root";
 
     public int addApartment(Apartment apartment) {
-        try {
-            Connection connection = DriverManager.getConnection(url, user, password);
+        PreparedStatement preparedStatement = null;
+        try (Connection connection = ConnectionFactory.createConnection()
+        ){
             String sql = "INSERT INTO  apartment set " +
                     "capacity = ?," +
                     "apartmentType = ?," +
                     "apartmentNumber = ?," +
-                    "price = ?;";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                    "price = ?";
+
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1,apartment.getCapacity());
             preparedStatement.setString(2,apartment.getApartmentType());
             preparedStatement.setInt(3,apartment.getNumber());
             preparedStatement.setInt(4,apartment.getPrice());
-            return preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
+            return 0;
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            if (preparedStatement!=null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return -1;
     }
 
     public int deleteApartment(Apartment apartment) {
+        Statement stmt = null;
+        Connection connection = null;
         try{
-            Connection connection = DriverManager.getConnection(url, user, password);
-            Statement stmt = connection.createStatement();
+            connection = ConnectionFactory.createConnection();
+            stmt = connection.createStatement();
             long id = apartment.getId();
-            String sql = "DELETE * FROM apartment where idApartment =" + id;
-            return stmt.executeUpdate(sql);
+            String sql = "DELETE FROM apartment where idApartment =" + id;
+            stmt.executeUpdate(sql);
+            return 0;
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            try{
+                stmt.close();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return -1;
     }
 
-    public List<Apartment> findAll() {
-        List<Apartment> apartments = new ArrayList<Apartment>();
-
-        try{
-            Connection connection = DriverManager.getConnection(url, user, password);
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM apartment");
-            if(rs.next())
-            {
-                Apartment apartment = new Apartment();
-                apartment.setId(rs.getInt("idApartment") );
-                apartment.setCapacity(rs.getInt("capacity") );
-                //TODO exception handling
-                apartment.setApartmentType(ApartmentType.valueOf(rs.getString("apartmentType")) );
-                apartment.setNumber(rs.getInt("apartmentNumber"));
-                apartment.setPrice(rs.getInt("price") );
-                apartments.add(apartment);
-            }
-            return apartments;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public Apartment findFreeApartment() {
         return null;
     }
-    //TODO idNotFoundException?
-    public Apartment findById(long id) {
-        try{
-            Apartment apartment = new Apartment();
-            Connection connection = DriverManager.getConnection(url, user, password);
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM apartment where idApartment =" + id);
-            if(rs.next())
-            {
-                apartment.setId(rs.getInt("idApartment") );
-                apartment.setCapacity(rs.getInt("capacity") );
-                try{
-                    String aType = rs.getString("apartmentType");
-                    apartment.setApartmentType(ApartmentType.valueOf(aType.toUpperCase()));
-                }catch(NullPointerException ex){
-                    System.out.println("Exception: Enum not found.");
-                    return null;
+
+    public List<Apartment> findAll() {
+        List<Apartment> apartments = new ArrayList<>();
+        try(Connection connection = ConnectionFactory.createConnection();
+                Statement stmt = connection.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT * FROM apartment")){
+                if(rs.next())
+                {
+                    Apartment apartment = new Apartment();
+                    apartment.setId(rs.getInt("idApartment") );
+                    apartment.setCapacity(rs.getInt("capacity") );
+                    apartment.setApartmentType(ApartmentType.valueOf(rs.getString("apartmentType")) );
+                    apartment.setNumber(rs.getInt("apartmentNumber"));
+                    apartment.setPrice(rs.getInt("price") );
+                    apartments.add(apartment);
                 }
-                apartment.setNumber(rs.getInt("apartmentNumber"));
-                apartment.setPrice(rs.getInt("price") );
-                return apartment;
-            }
+                return apartments;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return Collections.emptyList();
+    }
+
+    public Apartment findById(long id)  {
+        Apartment apartment = new Apartment();
+        try( Connection connection = ConnectionFactory.createConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT * FROM apartment where idApartment =" + id)){
+                  if (rs.next()) {
+                      apartment.setId(rs.getInt("idApartment"));
+                      apartment.setCapacity(rs.getInt("capacity"));
+                      String aType = rs.getString("apartmentType");
+                      apartment.setApartmentType(ApartmentType.valueOf(aType.toUpperCase()));
+
+                      apartment.setNumber(rs.getInt("apartmentNumber"));
+                      apartment.setPrice(rs.getInt("price"));
+                  }
+                    return apartment;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            //throw new IdNotFoundException();
+        }
+        return new Apartment();
     }
 }
