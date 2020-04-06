@@ -56,17 +56,13 @@ public class MySqlApartmentRepository implements ApartmentRepository{
             e.printStackTrace();
         }finally {
             try{
-                stmt.close();
-                connection.close();
+                if (stmt !=null) stmt.close();
+                if (connection!=null) connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
         return -1;
-    }
-
-    public Apartment findFreeApartment() {
-        return null;
     }
 
     public List<Apartment> findAll() {

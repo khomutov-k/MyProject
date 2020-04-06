@@ -2,6 +2,7 @@ package DAO;
 
 import Domain.Tenant;
 
+import java.util.Date;
 import java.util.List;
 
 public interface TenantRepository {
@@ -11,4 +12,5 @@ public interface TenantRepository {
 
     List<Tenant> findAll(); // Select query to get all tenants from DB
     Tenant findById(long id); // Select query to get  Tenant by ID
+    List<Tenant> findByDate(Date date);
 }

@@ -9,6 +9,6 @@ import java.util.List;
 public interface ReservationRepository {
     Apartment findApartmentByTenantId(long id);
     Tenant findTenantByApartmentId(long id);
-    void addReservation(Reservation reservation);
+    int addReservation(Reservation reservation);
     List<Reservation> findAll();
 }

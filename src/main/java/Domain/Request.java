@@ -17,8 +17,8 @@ public class Request {
         this.id = id;
     }
 
-    public ApartmentType getWantedType() {
-        return wantedType;
+    public String getWantedType() {
+        return wantedType.toString();
     }
 
     public void setWantedType(ApartmentType wantedType) {
