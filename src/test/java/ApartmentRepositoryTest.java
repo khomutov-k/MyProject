@@ -1,4 +1,4 @@
-import DAO.MySqlApartmentRepository;
+import DAO.MySql.MySqlApartmentRepository;
 import Domain.Apartment;
 import Domain.ApartmentType;
 import org.testng.Assert;
