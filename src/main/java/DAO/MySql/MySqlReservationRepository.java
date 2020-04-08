@@ -1,5 +1,7 @@
-package DAO;
+package DAO.MySql;
 
+import DAO.ConnectionFactory;
+import DAO.Interfaces.ReservationRepository;
 import Domain.Apartment;
 import Domain.Reservation;
 import Domain.Tenant;

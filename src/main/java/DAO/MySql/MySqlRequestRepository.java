@@ -1,7 +1,9 @@
-package DAO;
+package DAO.MySql;
 
+import DAO.ConnectionFactory;
+import DAO.Interfaces.RequestRepository;
 import Domain.ApartmentType;
-import Domain.Request;
+import Domain.Booking;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -9,9 +11,9 @@ import java.util.Collections;
 import java.util.List;
 
 //TODO javadoc
-public class MySqlRequestRepository implements RequestRepository{
+public class MySqlRequestRepository implements RequestRepository {
 
-    public int addRequest(Request Request) {
+    public int addRequest(Booking Booking) {
         PreparedStatement preparedStatement = null;
         try (Connection connection = ConnectionFactory.createConnection()
         ){
@@ -22,10 +24,10 @@ public class MySqlRequestRepository implements RequestRepository{
                     "departureDate = ?";
 
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1,Request.getNumberOfPeople());
-            preparedStatement.setString(2,Request.getWantedType());
-            preparedStatement.setString(3,"'"+Request.getArrivalDate()+"'");
-            preparedStatement.setString(4,"'"+Request.getDepartureDate()+"'");
+            preparedStatement.setInt(1, Booking.getNumberOfPeople());
+            preparedStatement.setString(2, Booking.getWantedType());
+            preparedStatement.setString(3,"'"+ Booking.getArrivalDate()+"'");
+            preparedStatement.setString(4,"'"+ Booking.getDepartureDate()+"'");
             preparedStatement.executeUpdate();
             return 0;
         } catch (SQLException e) {
@@ -42,13 +44,13 @@ public class MySqlRequestRepository implements RequestRepository{
         return -1;
     }
 
-    public int deleteRequest(Request Request) {
+    public int deleteRequest(Booking Booking) {
         Statement stmt = null;
         Connection connection = null;
         try{
             connection = ConnectionFactory.createConnection();
             stmt = connection.createStatement();
-            long id = Request.getId();
+            long id = Booking.getId();
             String sql = "DELETE FROM request_booking where idRequest =" + id;
             stmt.executeUpdate(sql);
             return 0;
@@ -65,45 +67,45 @@ public class MySqlRequestRepository implements RequestRepository{
         return -1;
     }
 
-    public List<Request> findAll() {
-        List<Request> requests = new ArrayList<>();
+    public List<Booking> findAll() {
+        List<Booking> bookings = new ArrayList<>();
         try(Connection connection = ConnectionFactory.createConnection();
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM request_booking")){
             if(rs.next())
             {
-                Request request = new Request();
-                request.setId(rs.getInt("idRequest") );
-                request.setNumberOfPeople(rs.getInt("numberOfPeople") );
-                request.setWantedType(ApartmentType.valueOf(rs.getString("ApartmentType")) );
-                request.setArrivalDate(rs.getDate( "arrivalDate"));
-                request.setDepartureDate(rs.getDate("DepartureDate"));
-                requests.add(request);
+                Booking booking = new Booking();
+                booking.setId(rs.getInt("idRequest") );
+                booking.setNumberOfPeople(rs.getInt("numberOfPeople") );
+                booking.setWantedType(ApartmentType.valueOf(rs.getString("ApartmentType")) );
+                booking.setArrivalDate(rs.getDate( "arrivalDate"));
+                booking.setDepartureDate(rs.getDate("DepartureDate"));
+                bookings.add(booking);
             }
-            return requests;
+            return bookings;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return Collections.emptyList();
     }
 
-    public Request findById(long id)  {
-        Request request = new Request();
+    public Booking findById(long id)  {
+        Booking booking = new Booking();
         try( Connection connection = ConnectionFactory.createConnection();
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM request_booking where idRequest =" + id)){
             if (rs.next()) {
-                request.setId(rs.getInt("idRequest") );
-                request.setNumberOfPeople(rs.getInt("numberOfPeople") );
-                request.setWantedType(ApartmentType.valueOf(rs.getString("ApartmentType")) );
-                request.setArrivalDate(rs.getDate( "arrivalDate"));
-                request.setDepartureDate(rs.getDate("DepartureDate"));
+                booking.setId(rs.getInt("idRequest") );
+                booking.setNumberOfPeople(rs.getInt("numberOfPeople") );
+                booking.setWantedType(ApartmentType.valueOf(rs.getString("ApartmentType")) );
+                booking.setArrivalDate(rs.getDate( "arrivalDate"));
+                booking.setDepartureDate(rs.getDate("DepartureDate"));
             }
-            return request;
+            return booking;
         } catch (SQLException e) {
             e.printStackTrace();
             //throw new IdNotFoundException();
         }
-        return new Request();
+        return new Booking();
     }
 }

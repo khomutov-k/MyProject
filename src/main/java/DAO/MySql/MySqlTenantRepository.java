@@ -1,5 +1,7 @@
-package DAO;
+package DAO.MySql;
 
+import DAO.ConnectionFactory;
+import DAO.Interfaces.TenantRepository;
 import Domain.Tenant;
 
 import java.sql.*;
@@ -9,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 //TODO javadoc
-public class MySqlTenantRepository implements TenantRepository{
+public class MySqlTenantRepository implements TenantRepository {
 
     public int addTenant(Tenant Tenant) {
         PreparedStatement preparedStatement = null;

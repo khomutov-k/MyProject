@@ -1,11 +1,11 @@
 package Service;
 
-import DAO.ApartmentRepository;
-import DAO.RequestRepository;
-import DAO.ReservationRepository;
-import DAO.TenantRepository;
+import DAO.Interfaces.ApartmentRepository;
+import DAO.Interfaces.RequestRepository;
+import DAO.Interfaces.ReservationRepository;
+import DAO.Interfaces.TenantRepository;
 import Domain.Apartment;
-import Domain.Request;
+import Domain.Booking;
 import Domain.Reservation;
 import Domain.Tenant;
 
@@ -28,7 +28,7 @@ public class TenantRegister {
         this.reservationRepository = reservationRepository;
     }
 
-    public boolean registerTenant(Tenant tenant, Request request){
+    public boolean registerTenant(Tenant tenant, Booking booking){
 
         List<Apartment> apartments = apartmentRepository.findAll();
         List<Reservation> reservations = reservationRepository.findAll();
@@ -43,9 +43,9 @@ public class TenantRegister {
 
 
         if (apartment.isPresent()) {
-            Reservation reservation = new Reservation(tenant.getId(), apartment.get().getId(), request.getId());
+            Reservation reservation = new Reservation(tenant.getId(), apartment.get().getId(), booking.getId());
             reservationRepository.addReservation(reservation);
-            requestRepository.deleteRequest(request);
+            tenantRepository.addTenant(tenant);
             return true;
         }
         return false;

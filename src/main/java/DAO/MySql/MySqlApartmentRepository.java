@@ -1,5 +1,7 @@
-package DAO;
+package DAO.MySql;
 
+import DAO.ConnectionFactory;
+import DAO.Interfaces.ApartmentRepository;
 import Domain.Apartment;
 import Domain.ApartmentType;
 
@@ -9,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 //TODO javadoc
-public class MySqlApartmentRepository implements ApartmentRepository{
+public class MySqlApartmentRepository implements ApartmentRepository {
 
     public int addApartment(Apartment apartment) {
         PreparedStatement preparedStatement = null;

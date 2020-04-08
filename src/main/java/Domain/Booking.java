@@ -2,7 +2,7 @@ package Domain;
 
 import java.util.Date;
 
-public class Request {
+public class Booking {
     private long id;
     private int numberOfPeople;
     private Date arrivalDate;
