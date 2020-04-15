@@ -7,6 +7,15 @@ public class Tenant {
     private String secondName;
     private String email;
     private String phone;
+    private long bookingId;
+
+    public long getBookingId() {
+        return bookingId;
+    }
+
+    public void setBookingId(long bookingId) {
+        this.bookingId = bookingId;
+    }
 
     public long getId() {
         return id;

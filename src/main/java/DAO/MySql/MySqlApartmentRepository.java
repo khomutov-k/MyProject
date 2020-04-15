@@ -44,13 +44,12 @@ public class MySqlApartmentRepository implements ApartmentRepository {
         return -1;
     }
 
-    public int deleteApartment(Apartment apartment) {
+    public int deleteApartment(long id) {
         Statement stmt = null;
         Connection connection = null;
         try{
             connection = ConnectionFactory.createConnection();
             stmt = connection.createStatement();
-            long id = apartment.getId();
             String sql = "DELETE FROM apartment where idApartment =" + id;
             stmt.executeUpdate(sql);
             return 0;
@@ -72,12 +71,12 @@ public class MySqlApartmentRepository implements ApartmentRepository {
         try(Connection connection = ConnectionFactory.createConnection();
                 Statement stmt = connection.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT * FROM apartment")){
-                if(rs.next())
+                while(rs.next())
                 {
                     Apartment apartment = new Apartment();
                     apartment.setId(rs.getInt("idApartment") );
                     apartment.setCapacity(rs.getInt("capacity") );
-                    apartment.setApartmentType(ApartmentType.valueOf(rs.getString("apartmentType")) );
+                    apartment.setApartmentType(ApartmentType.valueOf(rs.getString("apartmentType").toUpperCase()));
                     apartment.setNumber(rs.getInt("apartmentNumber"));
                     apartment.setPrice(rs.getInt("price") );
                     apartments.add(apartment);

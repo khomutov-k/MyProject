@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface TenantRepository {
     int addTenant(Tenant Tenant) ; // Add Tenant to DB
-    int deleteTenant(Tenant Tenant); // Delete Tenant from DB
+    int deleteTenant(long id); // Delete Tenant from DB
     //TODO Edit operations
 
     List<Tenant> findAll(); // Select query to get all tenants from DB

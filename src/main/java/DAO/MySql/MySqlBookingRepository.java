@@ -1,7 +1,7 @@
 package DAO.MySql;
 
 import DAO.ConnectionFactory;
-import DAO.Interfaces.RequestRepository;
+import DAO.Interfaces.BookingRepository;
 import Domain.ApartmentType;
 import Domain.Booking;
 
@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 //TODO javadoc
-public class MySqlRequestRepository implements RequestRepository {
+public class MySqlBookingRepository implements BookingRepository {
 
     public int addRequest(Booking Booking) {
         PreparedStatement preparedStatement = null;
@@ -26,8 +26,8 @@ public class MySqlRequestRepository implements RequestRepository {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, Booking.getNumberOfPeople());
             preparedStatement.setString(2, Booking.getWantedType());
-            preparedStatement.setString(3,"'"+ Booking.getArrivalDate()+"'");
-            preparedStatement.setString(4,"'"+ Booking.getDepartureDate()+"'");
+            preparedStatement.setDate(3,Booking.getArrivalDate());
+            preparedStatement.setDate(4,Booking.getDepartureDate());
             preparedStatement.executeUpdate();
             return 0;
         } catch (SQLException e) {
@@ -44,13 +44,12 @@ public class MySqlRequestRepository implements RequestRepository {
         return -1;
     }
 
-    public int deleteRequest(Booking Booking) {
+    public int deleteRequest(long id) {
         Statement stmt = null;
         Connection connection = null;
         try{
             connection = ConnectionFactory.createConnection();
             stmt = connection.createStatement();
-            long id = Booking.getId();
             String sql = "DELETE FROM request_booking where idRequest =" + id;
             stmt.executeUpdate(sql);
             return 0;

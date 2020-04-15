@@ -5,7 +5,10 @@ public class Reservation {
     private long apartmentId;
     private long requestId;
 
-    public Reservation(long tenantId, long apartmentId, long requestId) {
+    public Reservation(){
+
+    }
+    public Reservation(long tenantId, long requestId) {
         this.tenantId = tenantId;
         this.apartmentId = apartmentId;
         this.requestId = requestId;

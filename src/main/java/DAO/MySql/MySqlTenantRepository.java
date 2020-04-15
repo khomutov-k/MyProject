@@ -43,13 +43,12 @@ public class MySqlTenantRepository implements TenantRepository {
         return -1;
     }
 
-    public int deleteTenant(Tenant Tenant) {
+    public int deleteTenant(long id) {
         Statement stmt = null;
         Connection connection = null;
         try{
             connection = ConnectionFactory.createConnection();
             stmt = connection.createStatement();
-            long id = Tenant.getId();
             String sql = "DELETE FROM Tenant where idTenant =" + id;
             stmt.executeUpdate(sql);
             return 0;
