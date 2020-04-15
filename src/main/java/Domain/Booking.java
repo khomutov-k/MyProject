@@ -1,12 +1,12 @@
 package Domain;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Booking {
     private long id;
     private int numberOfPeople;
-    private Date arrivalDate;
-    private Date departureDate;
+    private LocalDate arrivalDate;
+    private LocalDate departureDate;
     private ApartmentType wantedType;
 
     public long getId() {
@@ -33,19 +33,19 @@ public class Booking {
         this.numberOfPeople = numberOfPeople;
     }
 
-    public Date getArrivalDate() {
+    public LocalDate getArrivalDate() {
         return arrivalDate;
     }
 
-    public void setArrivalDate(Date arrivalDate) {
+    public void setArrivalDate(LocalDate arrivalDate) {
         this.arrivalDate = arrivalDate;
     }
 
-    public Date getDepartureDate() {
+    public LocalDate getDepartureDate() {
         return departureDate;
     }
 
-    public void setDepartureDate(Date departureDate) {
+    public void setDepartureDate(LocalDate departureDate) {
         this.departureDate = departureDate;
     }
 }

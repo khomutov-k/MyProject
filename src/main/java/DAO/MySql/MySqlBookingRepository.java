@@ -6,6 +6,7 @@ import Domain.ApartmentType;
 import Domain.Booking;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,8 +27,8 @@ public class MySqlBookingRepository implements BookingRepository {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, Booking.getNumberOfPeople());
             preparedStatement.setString(2, Booking.getWantedType());
-            preparedStatement.setDate(3,Booking.getArrivalDate());
-            preparedStatement.setDate(4,Booking.getDepartureDate());
+            preparedStatement.setObject(3, Booking.getArrivalDate());
+            preparedStatement.setObject(4,Booking.getDepartureDate());
             preparedStatement.executeUpdate();
             return 0;
         } catch (SQLException e) {
@@ -71,14 +72,10 @@ public class MySqlBookingRepository implements BookingRepository {
         try(Connection connection = ConnectionFactory.createConnection();
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM request_booking")){
-            if(rs.next())
+            while(rs.next())
             {
                 Booking booking = new Booking();
-                booking.setId(rs.getInt("idRequest") );
-                booking.setNumberOfPeople(rs.getInt("numberOfPeople") );
-                booking.setWantedType(ApartmentType.valueOf(rs.getString("ApartmentType")) );
-                booking.setArrivalDate(rs.getDate( "arrivalDate"));
-                booking.setDepartureDate(rs.getDate("DepartureDate"));
+                bookingFilling(rs, booking);
                 bookings.add(booking);
             }
             return bookings;
@@ -88,17 +85,21 @@ public class MySqlBookingRepository implements BookingRepository {
         return Collections.emptyList();
     }
 
+    private void bookingFilling(ResultSet rs, Booking booking) throws SQLException {
+        booking.setId(rs.getInt("idRequest") );
+        booking.setNumberOfPeople(rs.getInt("numberOfPeople") );
+        booking.setWantedType(ApartmentType.valueOf(rs.getString("ApartmentType")) );
+        booking.setArrivalDate(rs.getObject( "arrivalDate", LocalDate.class));
+        booking.setDepartureDate(rs.getObject("DepartureDate",LocalDate.class));
+    }
+
     public Booking findById(long id)  {
         Booking booking = new Booking();
         try( Connection connection = ConnectionFactory.createConnection();
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM request_booking where idRequest =" + id)){
             if (rs.next()) {
-                booking.setId(rs.getInt("idRequest") );
-                booking.setNumberOfPeople(rs.getInt("numberOfPeople") );
-                booking.setWantedType(ApartmentType.valueOf(rs.getString("ApartmentType")) );
-                booking.setArrivalDate(rs.getDate( "arrivalDate"));
-                booking.setDepartureDate(rs.getDate("DepartureDate"));
+                bookingFilling(rs, booking);
             }
             return booking;
         } catch (SQLException e) {
