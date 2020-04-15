@@ -26,6 +26,8 @@ public class ConsoleManager implements Closeable {
         return apartment;
     }
     public void writeToConsole(Apartment apartment){
+        System.out.print("Id: ");
+        System.out.println(apartment.getId());
         System.out.print("Количество человек, на которое рассчитана данные апартаменты:");
         System.out.println(apartment.getCapacity());
         System.out.print("Тип апартаментов(Single, Delux, Suit, PresidentLux):");
@@ -61,7 +63,12 @@ public class ConsoleManager implements Closeable {
         Booking.setDepartureDate(dateFormat.parse(scanner.nextLine()));
         return Booking;
     }
-
+    public String nextLine(){
+        return this.scanner.nextLine();
+    }
+    public Long nextLong(){
+        return this.scanner.nextLong();
+    }
     @Override
     public void close() {
         scanner.close();
