@@ -1,5 +1,5 @@
 import DAO.Interfaces.ApartmentRepository;
-import DAO.Interfaces.RequestRepository;
+import DAO.Interfaces.BookingRepository;
 import DAO.Interfaces.ReservationRepository;
 import DAO.Interfaces.TenantRepository;
 import Domain.Apartment;
@@ -32,9 +32,9 @@ public class TenantRegisterTest {
         Mockito.when(reservationRepository.findAll()).thenReturn(Collections.emptyList());
         
         TenantRepository tenantRepository = Mockito.mock(TenantRepository.class);
-        RequestRepository requestRepository = Mockito.mock(RequestRepository.class);
+        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
 
-        TenantRegister tenantRegister = new TenantRegister(apartmentRepository,tenantRepository,requestRepository,reservationRepository);
+        TenantRegister tenantRegister = new TenantRegister(apartmentRepository,tenantRepository, bookingRepository,reservationRepository);
 
         //Parameters for service method
         Tenant newTenant = Mockito.mock(Tenant.class);
@@ -44,7 +44,7 @@ public class TenantRegisterTest {
         Mockito.when(newBooking.getId()).thenReturn(1L);
 
         //Execution is here
-        tenantRegister.registerTenant(newTenant,newBooking);
+        tenantRegister.registerTenant(newTenant);
 
         //Assertion
 

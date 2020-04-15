@@ -1,11 +1,10 @@
 package Service;
 
 import DAO.Interfaces.ApartmentRepository;
-import DAO.Interfaces.RequestRepository;
+import DAO.Interfaces.BookingRepository;
 import DAO.Interfaces.ReservationRepository;
 import DAO.Interfaces.TenantRepository;
 import Domain.Apartment;
-import Domain.Booking;
 import Domain.Reservation;
 import Domain.Tenant;
 
@@ -15,20 +14,20 @@ import java.util.Optional;
 public class TenantRegister {
     private ApartmentRepository apartmentRepository;
     private TenantRepository tenantRepository;
-    private RequestRepository requestRepository;
+    private BookingRepository bookingRepository;
     private ReservationRepository reservationRepository;
 
     public TenantRegister(ApartmentRepository apartmentRepository,
                           TenantRepository tenantRepository,
-                          RequestRepository requestRepository,
+                          BookingRepository bookingRepository,
                           ReservationRepository reservationRepository) {
         this.apartmentRepository = apartmentRepository;
         this.tenantRepository = tenantRepository;
-        this.requestRepository = requestRepository;
+        this.bookingRepository = bookingRepository;
         this.reservationRepository = reservationRepository;
     }
 
-    public boolean registerTenant(Tenant tenant, Booking booking){
+    public boolean registerTenant(Tenant tenant){
 
         List<Apartment> apartments = apartmentRepository.findAll();
         List<Reservation> reservations = reservationRepository.findAll();
@@ -43,9 +42,9 @@ public class TenantRegister {
 
 
         if (apartment.isPresent()) {
-            Reservation reservation = new Reservation(tenant.getId(), apartment.get().getId(), booking.getId());
-            reservationRepository.addReservation(reservation);
-            tenantRepository.addTenant(tenant);
+            Reservation reservation = reservationRepository.findById(tenant.getId());
+            reservation.setApartmentId(apartment.get().getId());
+            reservationRepository.updateReservation(reservation);
             return true;
         }
         return false;

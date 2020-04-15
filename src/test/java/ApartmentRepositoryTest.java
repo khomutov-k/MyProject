@@ -23,7 +23,7 @@ public class ApartmentRepositoryTest {
         MySqlApartmentRepository rep = new MySqlApartmentRepository();
         Apartment apartment = new Apartment();
         apartment.setId(1);
-        int res = rep.deleteApartment(apartment);
+        int res = rep.deleteApartment(apartment.getId());
         Assert.assertEquals(res,0);
     }
     @Test
