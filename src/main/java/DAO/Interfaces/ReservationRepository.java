@@ -1,15 +1,12 @@
 package DAO.Interfaces;
 
-import Domain.Apartment;
+import DAO.MyExceptions.IdNotFoundException;
 import Domain.Reservation;
-import Domain.Tenant;
 
 import java.util.List;
 
 public interface ReservationRepository {
-    Apartment findApartmentByTenantId(long id);
-    Tenant findTenantByApartmentId(long id);
-    Reservation findById(long id);
+    List<Reservation> findById(long id) throws IdNotFoundException;
     int updateReservation(Reservation reservation);
     int addReservation(Reservation reservation);
     List<Reservation> findAll();

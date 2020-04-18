@@ -2,9 +2,8 @@ package DAO.MySql;
 
 import DAO.ConnectionFactory;
 import DAO.Interfaces.ReservationRepository;
-import Domain.Apartment;
+import DAO.MyExceptions.IdNotFoundException;
 import Domain.Reservation;
-import Domain.Tenant;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,33 +11,30 @@ import java.util.Collections;
 import java.util.List;
 
 public class MySqlReservationRepository implements ReservationRepository {
-    @Override
-    public Apartment findApartmentByTenantId(long id) {
-        return null;
-    }
 
     @Override
-    public Tenant findTenantByApartmentId(long id) {
-        return null;
-    }
-
-    @Override
-    public Reservation findById(long id) {
-        Reservation reservation = new Reservation();
+    public List<Reservation> findById(long id) throws IdNotFoundException {
+        List<Reservation> reservations = new ArrayList<>();
         try( Connection connection = ConnectionFactory.createConnection();
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM  tenant_apartment_reservations where tenant_id =" + id)){
-            if (rs.next()) {
+
+            while (rs.next()) {
+                Reservation reservation = new Reservation();
                 reservation.setRequestId(rs.getLong("request_id"));
                 reservation.setApartmentId(rs.getLong("apartment_id"));
                 reservation.setTenantId(id);
+                reservations.add(reservation);
             }
-            return reservation;
+            if (reservations.isEmpty()){
+                throw new IdNotFoundException();
+            }
+            return reservations;
+            //throw new IdNotFoundException();
         } catch (SQLException e) {
             e.printStackTrace();
-            //throw new IdNotFoundException();
         }
-        return new Reservation();
+        return null;
     }
 
     @Override
@@ -47,13 +43,13 @@ public class MySqlReservationRepository implements ReservationRepository {
         try (Connection connection = ConnectionFactory.createConnection()
         ){
             String sql = "UPDATE tenant_apartment_reservations set " +
-                    "apartment_id = ?," +
-                    "request_id = ?"+
-                    "where tenant_id =?;";
+                    "apartment_id = ? ," +
+                    "request_id = ? "+
+                    "where tenant_id = ? ;";
 
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setLong(3,reservation.getTenantId());
             preparedStatement.setLong(1,reservation.getApartmentId());
+            preparedStatement.setLong(3,reservation.getTenantId());
             preparedStatement.setLong(2,reservation.getRequestId());
             preparedStatement.executeUpdate();
             return 0;
@@ -82,8 +78,11 @@ public class MySqlReservationRepository implements ReservationRepository {
                     "request_id = ?";
 
             preparedStatement = connection.prepareStatement(sql);
+            if (reservation.getApartmentId() == 0){
+                preparedStatement.setNull(2, Types.BIGINT);
+            }
+            else preparedStatement.setLong(2,reservation.getApartmentId());
             preparedStatement.setLong(1,reservation.getTenantId());
-            preparedStatement.setLong(2,reservation.getApartmentId());
             preparedStatement.setLong(3,reservation.getRequestId());
             preparedStatement.executeUpdate();
             return 0;

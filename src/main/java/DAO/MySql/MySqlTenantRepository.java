@@ -2,9 +2,13 @@ package DAO.MySql;
 
 import DAO.ConnectionFactory;
 import DAO.Interfaces.TenantRepository;
+import DAO.MyExceptions.IdNotFoundException;
 import Domain.Tenant;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -13,32 +17,22 @@ import java.util.List;
 //TODO javadoc
 public class MySqlTenantRepository implements TenantRepository {
 
-    public int addTenant(Tenant Tenant) {
-        PreparedStatement preparedStatement = null;
-        try (Connection connection = ConnectionFactory.createConnection()
+    public long addTenant(Tenant Tenant) {
+        try (Connection connection = ConnectionFactory.createConnection();
+             Statement statement = connection.createStatement()
         ){
             String sql = "INSERT INTO  Tenant set " +
-                    "firstName = ?," +
-                    "secondName = ?," +
-                    "email = ?," +
-                    "phone = ?";
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,Tenant.getFirstName());
-            preparedStatement.setString(2,Tenant.getSecondName());
-            preparedStatement.setString(3,Tenant.getEmail());
-            preparedStatement.setString(4,Tenant.getPhone());
-            preparedStatement.executeUpdate();
-            return 0;
+                    "firstName = '" +Tenant.getFirstName() + "',"+
+                    "secondName = '" +Tenant.getSecondName() +"',"+
+                    "email = '" + Tenant.getEmail() + "'," +
+                     "phone = "+Tenant.getPhone()+";";
+            statement.executeUpdate(sql,Statement.RETURN_GENERATED_KEYS);
+            ResultSet resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                return resultSet.getLong(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            if (preparedStatement!=null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return -1;
     }
@@ -65,8 +59,8 @@ public class MySqlTenantRepository implements TenantRepository {
         return -1;
     }
 
-    public List<Tenant> findAll() {
-        List<Tenant> Tenants = new ArrayList<>();
+    public List<Tenant> findAll() throws IdNotFoundException {
+        List<Tenant> tenants = new ArrayList<>();
         try(Connection connection = ConnectionFactory.createConnection();
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM Tenant")){
@@ -78,9 +72,12 @@ public class MySqlTenantRepository implements TenantRepository {
                 Tenant.setSecondName(rs.getString("secondName"));
                 Tenant.setEmail(rs.getString("TenantEmail"));
                 Tenant.setPhone(rs.getString("phone") );
-                Tenants.add(Tenant);
+                tenants.add(Tenant);
             }
-            return Tenants;
+            if (tenants.isEmpty()){
+                throw new IdNotFoundException();
+            }
+            return tenants;
         } catch (SQLException e) {
             e.printStackTrace();
         }

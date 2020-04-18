@@ -7,7 +7,8 @@ import Domain.Tenant;
 
 import java.io.Closeable;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class ConsoleManager implements Closeable {
@@ -23,6 +24,7 @@ public class ConsoleManager implements Closeable {
         apartment.setNumber(scanner.nextInt());
         System.out.print("Введите стоимость апартаментов:");
         apartment.setPrice(scanner.nextInt());
+        scanner.nextLine();
         return apartment;
     }
     public void writeToConsole(Apartment apartment){
@@ -39,13 +41,13 @@ public class ConsoleManager implements Closeable {
     }
     public Tenant readTenant(){
         Tenant tenant = new Tenant();
-        System.out.print("Введите ваше Имя");
+        System.out.print("Введите ваше имя: ");
         tenant.setFirstName(scanner.nextLine());
-        System.out.print("Введите вашу Фамилию");
+        System.out.print("Введите вашу фамилию: ");
         tenant.setSecondName(scanner.nextLine());
-        System.out.print("Введите ваш эл. почту:");
+        System.out.print("Введите ваш эл. почту: ");
         tenant.setEmail(scanner.nextLine());
-        System.out.print("Введите номер телефона");
+        System.out.print("Введите номер телефона: ");
         tenant.setPhone(scanner.nextLine());
         return tenant;
     }
@@ -57,10 +59,10 @@ public class ConsoleManager implements Closeable {
         System.out.print("Введите тип апартаментов(Single, Delux, Suit, PresidentLux):");
         Booking.setWantedType(ApartmentType.valueOf(scanner.nextLine().toUpperCase()));
         System.out.print("Введите дату приезда(yyyy-MM-dd):");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Booking.setArrivalDate(dateFormat.parse(scanner.nextLine()));
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        Booking.setArrivalDate(LocalDate.parse(scanner.nextLine(),dateFormat));
         System.out.print("Введите дату отъезда(yyyy-MM-dd):");
-        Booking.setDepartureDate(dateFormat.parse(scanner.nextLine()));
+        Booking.setDepartureDate(LocalDate.parse(scanner.nextLine(),dateFormat));
         return Booking;
     }
     public String nextLine(){

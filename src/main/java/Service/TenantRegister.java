@@ -4,10 +4,14 @@ import DAO.Interfaces.ApartmentRepository;
 import DAO.Interfaces.BookingRepository;
 import DAO.Interfaces.ReservationRepository;
 import DAO.Interfaces.TenantRepository;
+import DAO.MyExceptions.IdNotFoundException;
 import Domain.Apartment;
+import Domain.Booking;
 import Domain.Reservation;
 import Domain.Tenant;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,25 +32,42 @@ public class TenantRegister {
     }
 
     public boolean registerTenant(Tenant tenant){
+        List<Apartment> apartments = Collections.emptyList();
+        List<Reservation> tenantReservations;
 
-        List<Apartment> apartments = apartmentRepository.findAll();
-        List<Reservation> reservations = reservationRepository.findAll();
+        Booking booking;
+        Reservation tenantReservation = new Reservation();
 
-        //Looking for free apartment
-        Optional<Apartment> apartment = apartments.stream().filter(room -> {
-            for (Reservation reservation:reservations){
-                if (reservation.getApartmentId() == room.getId()) return false;
-            }
-            return true;
-        }).findFirst();
-
-
-        if (apartment.isPresent()) {
-            Reservation reservation = reservationRepository.findById(tenant.getId());
-            reservation.setApartmentId(apartment.get().getId());
-            reservationRepository.updateReservation(reservation);
-            return true;
+        int guestBooked = 0;
+        try{
+            apartments = apartmentRepository.findAll();
+            tenantReservations = reservationRepository.findById(tenant.getId());
+            tenantReservation = tenantReservations.get(0);
+            booking = bookingRepository.findById(tenantReservation.getRequestId());
+            guestBooked = booking.getNumberOfPeople();
+        }catch (IdNotFoundException e) {
+            System.out.println("Entered id is invalid. Please try again.");
         }
+        int guestCounter = 0;
+        List<Reservation> reservations = reservationRepository.findAll();
+        do {
+            //Looking for free apartment
+            Optional<Apartment> apartment = apartments.stream().filter(room -> {
+                for (Reservation reservation : reservations) {
+                    if (reservation.getApartmentId() == room.getId()) return false;
+                }
+                return true;
+            }).max(Comparator.comparingInt(Apartment::getCapacity));
+
+            if (apartment.isPresent()) {
+                tenantReservation.setApartmentId(apartment.get().getId());
+
+                if (reservationRepository.updateReservation(tenantReservation) == -1){
+                    System.out.println("Update error");
+                }
+                guestCounter += apartment.get().getCapacity();
+            }
+        }while(guestCounter < guestBooked);
         return false;
     }
 }

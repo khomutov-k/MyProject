@@ -2,6 +2,7 @@ package DAO.MySql;
 
 import DAO.ConnectionFactory;
 import DAO.Interfaces.ApartmentRepository;
+import DAO.MyExceptions.IdNotFoundException;
 import Domain.Apartment;
 import Domain.ApartmentType;
 
@@ -66,11 +67,12 @@ public class MySqlApartmentRepository implements ApartmentRepository {
         return -1;
     }
 
-    public List<Apartment> findAll() {
+    public List<Apartment> findAll()  {
         List<Apartment> apartments = new ArrayList<>();
         try(Connection connection = ConnectionFactory.createConnection();
                 Statement stmt = connection.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT * FROM apartment")){
+
                 while(rs.next())
                 {
                     Apartment apartment = new Apartment();
@@ -82,18 +84,20 @@ public class MySqlApartmentRepository implements ApartmentRepository {
                     apartments.add(apartment);
                 }
                 return apartments;
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
         return Collections.emptyList();
     }
 
-    public Apartment findById(long id)  {
-        Apartment apartment = new Apartment();
+    public Apartment findById(long id) throws IdNotFoundException {
+        Apartment apartment = null;
         try( Connection connection = ConnectionFactory.createConnection();
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM apartment where idApartment =" + id)){
                   if (rs.next()) {
+                      apartment = new Apartment();
                       apartment.setId(rs.getInt("idApartment"));
                       apartment.setCapacity(rs.getInt("capacity"));
                       String aType = rs.getString("apartmentType");
@@ -101,6 +105,9 @@ public class MySqlApartmentRepository implements ApartmentRepository {
 
                       apartment.setNumber(rs.getInt("apartmentNumber"));
                       apartment.setPrice(rs.getInt("price"));
+                  }
+                  if (apartment == null){
+                      throw new IdNotFoundException();
                   }
                     return apartment;
         } catch (SQLException e) {

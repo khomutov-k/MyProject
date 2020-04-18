@@ -3,6 +3,7 @@ import DAO.Interfaces.ApartmentRepository;
 import DAO.Interfaces.BookingRepository;
 import DAO.Interfaces.ReservationRepository;
 import DAO.Interfaces.TenantRepository;
+import DAO.MyExceptions.IdNotFoundException;
 import DAO.MySql.MySqlApartmentRepository;
 import DAO.MySql.MySqlBookingRepository;
 import DAO.MySql.MySqlReservationRepository;
@@ -13,7 +14,6 @@ import Domain.Reservation;
 import Domain.Tenant;
 import Service.TenantRegister;
 
-import java.text.ParseException;
 import java.util.List;
 
 public class MainStarter {
@@ -23,6 +23,7 @@ public class MainStarter {
     static     ReservationRepository reservationRepository = new MySqlReservationRepository();
     static     ConsoleManager cm = new ConsoleManager();
     static     TenantRegister register = new TenantRegister(apartmentRepository,tenantRepository, bookingRepository,reservationRepository);
+
     public static void main(String[] args) {
         /*
         Use ConsoleManager class to read from console and std.out to write to console
@@ -40,7 +41,7 @@ public class MainStarter {
         try {
             do {
                 writeMenuOptions();
-                ans = cm.nextLine();
+            ans = cm.nextLine();
                 switch (ans) {
                     case "1":
                         apartmentManagement();
@@ -65,7 +66,7 @@ public class MainStarter {
 
     private static void registration() {
         System.out.println("Please enter tenant id:");
-        Tenant tenant = tenantRepository.findById(cm.nextLong());
+        Tenant tenant = tenantRepository.findById(cm.nextLong()); cm.nextLine();
         register.registerTenant(tenant);
     }
 
@@ -73,12 +74,14 @@ public class MainStarter {
         System.out.println("Here you could fill in booking form.");
         try {
             Booking booking =  cm.readBooking();
-            bookingRepository.addRequest(booking);
+            long bookingId = bookingRepository.addBooking(booking);
             System.out.println("Please enter tenant information:");
             Tenant newTenant = cm.readTenant();
-            Reservation reservation = new Reservation(newTenant.getId(),booking.getId());
+            long tenantId = tenantRepository.addTenant(newTenant);
+            Reservation reservation = new Reservation(tenantId,bookingId);
+            reservation.setApartmentId(0);
             reservationRepository.addReservation(reservation);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             System.out.println("Input error:Error in type of apartment");
         }
     }
@@ -114,7 +117,12 @@ public class MainStarter {
         long id = cm.nextLong();
         //TODO check existence of the apartment if not throw exception
         System.out.println("Do you want to delete this apartment:");
-        Apartment deletedApartment = apartmentRepository.findById(id);
+        Apartment deletedApartment = null;
+        try {
+            deletedApartment = apartmentRepository.findById(id);
+        } catch (IdNotFoundException e) {
+            e.printStackTrace();
+        }
         cm.writeToConsole(deletedApartment);
         System.out.println("Are you sure?(yes/no)");
         cm.nextLine();

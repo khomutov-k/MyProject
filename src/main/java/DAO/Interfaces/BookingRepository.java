@@ -1,14 +1,15 @@
 package DAO.Interfaces;
 
+import DAO.MyExceptions.IdNotFoundException;
 import Domain.Booking;
 
 import java.util.List;
 
 public interface BookingRepository {
-    int addRequest(Booking Booking) ; // Add Request to DB
-    int deleteRequest(long id); // Delete Request from DB
-    //TODO Edit operations
+    long addBooking(Booking booking) ; // Add Request to DB
+    int deleteBooking(long id); // Delete Request from DB
+//    long getBookingId(Booking booking);
 
-    List<Booking> findAll(); // Select query to get all Requests from DB
-    Booking findById(long id); // Select query to get  Request by ID
+    List<Booking> findAll() throws IdNotFoundException; // Select query to get all Requests from DB
+    Booking findById(long id) throws IdNotFoundException; // Select query to get  Request by ID
 }

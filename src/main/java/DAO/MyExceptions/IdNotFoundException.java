@@ -1,5 +1,5 @@
 package DAO.MyExceptions;
 
-public class IdNotFoundException extends RuntimeException {
+public class IdNotFoundException extends Exception {
 
 }

@@ -2,10 +2,14 @@ package DAO.MySql;
 
 import DAO.ConnectionFactory;
 import DAO.Interfaces.BookingRepository;
+import DAO.MyExceptions.IdNotFoundException;
 import Domain.ApartmentType;
 import Domain.Booking;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,38 +18,29 @@ import java.util.List;
 //TODO javadoc
 public class MySqlBookingRepository implements BookingRepository {
 
-    public int addRequest(Booking Booking) {
-        PreparedStatement preparedStatement = null;
-        try (Connection connection = ConnectionFactory.createConnection()
+    public long addBooking(Booking Booking) {
+        try (Connection connection = ConnectionFactory.createConnection();
+             Statement statement = connection.createStatement()
         ){
-            String sql = "INSERT INTO  request_booking set " +
-                    "numberOfPeople = ?," +
-                    "apartmentType = ?," +
-                    "arrivalDate = ?," +
-                    "departureDate = ?";
+            String sql = "INSERT INTO  request_booking set "+
+                    "numberOfPeople = " + Booking.getNumberOfPeople()+
+                    ",apartmentType = '"+Booking.getWantedType()+"',"+
+                    "arrivalDate = '"+Booking.getArrivalDate()+"',"+
+                    "departureDate = '"+Booking.getDepartureDate()+"';";
 
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, Booking.getNumberOfPeople());
-            preparedStatement.setString(2, Booking.getWantedType());
-            preparedStatement.setObject(3, Booking.getArrivalDate());
-            preparedStatement.setObject(4,Booking.getDepartureDate());
-            preparedStatement.executeUpdate();
-            return 0;
+            statement.executeUpdate(sql,Statement.RETURN_GENERATED_KEYS);
+            ResultSet resultSet = statement.getGeneratedKeys();
+            if (resultSet.next()) {
+                return resultSet.getLong(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            if (preparedStatement!=null) {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            return -1;
         }
         return -1;
     }
 
-    public int deleteRequest(long id) {
+    public int deleteBooking(long id) {
         Statement stmt = null;
         Connection connection = null;
         try{
@@ -67,7 +62,7 @@ public class MySqlBookingRepository implements BookingRepository {
         return -1;
     }
 
-    public List<Booking> findAll() {
+    public List<Booking> findAll() throws IdNotFoundException {
         List<Booking> bookings = new ArrayList<>();
         try(Connection connection = ConnectionFactory.createConnection();
             Statement stmt = connection.createStatement();
@@ -77,6 +72,9 @@ public class MySqlBookingRepository implements BookingRepository {
                 Booking booking = new Booking();
                 bookingFilling(rs, booking);
                 bookings.add(booking);
+            }
+            if (bookings.isEmpty()){
+                throw new IdNotFoundException();
             }
             return bookings;
         } catch (SQLException e) {
@@ -88,18 +86,21 @@ public class MySqlBookingRepository implements BookingRepository {
     private void bookingFilling(ResultSet rs, Booking booking) throws SQLException {
         booking.setId(rs.getInt("idRequest") );
         booking.setNumberOfPeople(rs.getInt("numberOfPeople") );
-        booking.setWantedType(ApartmentType.valueOf(rs.getString("ApartmentType")) );
+        booking.setWantedType(ApartmentType.valueOf(rs.getString("ApartmentType").toUpperCase()) );
         booking.setArrivalDate(rs.getObject( "arrivalDate", LocalDate.class));
         booking.setDepartureDate(rs.getObject("DepartureDate",LocalDate.class));
     }
 
-    public Booking findById(long id)  {
+    public Booking findById(long id) throws IdNotFoundException {
         Booking booking = new Booking();
         try( Connection connection = ConnectionFactory.createConnection();
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM request_booking where idRequest =" + id)){
             if (rs.next()) {
                 bookingFilling(rs, booking);
+            }
+            if (booking.getId() == 0){
+                throw new IdNotFoundException();
             }
             return booking;
         } catch (SQLException e) {
